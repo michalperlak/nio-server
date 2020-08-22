@@ -5,6 +5,7 @@ import java.nio.channels.SelectionKey
 import java.util.concurrent.Executor
 
 class MessageProcessor(
+    private val messageHandler: MessageHandler,
     private val executor: Executor,
     private val messageInbox: MessageInbox,
     private val messageOutbox: MessageOutbox,
@@ -25,10 +26,13 @@ class MessageProcessor(
 
     private fun process(message: Message) {
         executor.execute {
-            message.data.flip()
-            messageOutbox.add(message.key, message.data)
-            keyInterests.interests(message.key, SelectionKey.OP_WRITE)
-            message.key.selector().wakeup()
+            val key = message.key
+            val responseData = messageHandler.handle(message.data)
+            responseData?.let {
+                messageOutbox.add(key, it)
+                keyInterests.interests(key, SelectionKey.OP_WRITE)
+            }
+            key.selector().wakeup()
         }
     }
 }

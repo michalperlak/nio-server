@@ -27,7 +27,8 @@ class Server(
         val keyInterests = KeyInterests()
         val messageInbox = MessageInbox()
         val messageOutbox = MessageOutbox()
-        val messageProcessor = MessageProcessor(executor, messageInbox, messageOutbox, keyInterests)
+        val echoMessageHandler = EchoMessageHandler()
+        val messageProcessor = MessageProcessor(echoMessageHandler, executor, messageInbox, messageOutbox, keyInterests)
         messageProcessor.start()
 
         val acceptHandler = AcceptHandler()
@@ -80,18 +81,20 @@ class Server(
     class ReadHandler(
         private val messageInbox: MessageInbox
     ) : KeyHandler {
+        private val buffer: ByteBuffer = ByteBuffer.allocateDirect(1024 * 1024)
+
         override fun handle(key: SelectionKey) {
             val socketChannel = key.channel() as SocketChannel
-            val buffer = ByteBuffer.allocateDirect(80)
+            buffer.clear()
             val read = socketChannel.read(buffer)
+            buffer.rewind()
             when {
                 read < 0 -> disconnect(socketChannel)
-                read > 0 -> messageInbox.add(
-                    Message(
-                        key = key,
-                        data = buffer
-                    )
-                )
+                read > 0 -> {
+                    val data = ByteArray(size = read)
+                    buffer.get(data)
+                    messageInbox.add(Message(key = key, data = data))
+                }
             }
         }
 
@@ -109,7 +112,7 @@ class Server(
             val socketChannel = key.channel() as SocketChannel
             val messages = messageOutbox.getAll(key)
             while (!messages.isEmpty()) {
-                val buffer = messages.peek()
+                val buffer = ByteBuffer.wrap(messages.peek())
                 val written = socketChannel.write(buffer)
                 if (written == -1) {
                     socketChannel.close()
