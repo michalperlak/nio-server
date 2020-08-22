@@ -8,9 +8,10 @@ import java.nio.channels.SelectionKey
 import java.nio.channels.SocketChannel
 
 internal class ReadHandler(
+    bufferSize: Int,
     private val messageInbox: MessageInbox
 ) : KeyHandler {
-    private val buffer: ByteBuffer = ByteBuffer.allocateDirect(1024 * 1024)
+    private val buffer: ByteBuffer = ByteBuffer.allocateDirect(bufferSize)
 
     override fun handle(key: SelectionKey) {
         val socketChannel = key.channel() as SocketChannel
