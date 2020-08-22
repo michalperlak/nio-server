@@ -1,12 +1,12 @@
-package dev.talkischeap.nio.server
+package dev.talkischeap.nio.server.key
 
 import java.nio.channels.SelectionKey
 import java.util.Queue
 import java.util.concurrent.LinkedBlockingQueue
 
-class KeyInterests {
+internal class KeyInterests(
     private val interestsQueue: Queue<Pair<SelectionKey, Int>> = LinkedBlockingQueue()
-
+) {
     fun interests(key: SelectionKey, ops: Int) {
         interestsQueue.add(key to ops)
     }

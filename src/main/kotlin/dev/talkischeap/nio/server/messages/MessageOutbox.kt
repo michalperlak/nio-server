@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.LinkedBlockingQueue
 
-class MessageOutbox {
+internal class MessageOutbox {
     private val outbox: ConcurrentMap<SelectionKey, Queue<ByteArray>> = ConcurrentHashMap()
 
     fun getAll(key: SelectionKey): Queue<ByteArray> = outbox.computeIfAbsent(key) { LinkedBlockingQueue() }

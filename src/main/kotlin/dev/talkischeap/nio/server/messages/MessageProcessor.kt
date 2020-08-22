@@ -1,10 +1,10 @@
 package dev.talkischeap.nio.server.messages
 
-import dev.talkischeap.nio.server.KeyInterests
+import dev.talkischeap.nio.server.key.KeyInterests
 import java.nio.channels.SelectionKey
 import java.util.concurrent.Executor
 
-class MessageProcessor(
+internal class MessageProcessor(
     private val messageHandler: MessageHandler,
     private val executor: Executor,
     private val messageInbox: MessageInbox,

@@ -3,7 +3,7 @@ package dev.talkischeap.nio.server.messages
 import java.util.Queue
 import java.util.concurrent.LinkedBlockingQueue
 
-class MessageInbox {
+internal class MessageInbox {
     private val queue: Queue<Message> = LinkedBlockingQueue()
 
     fun add(message: Message) {
