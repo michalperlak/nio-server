@@ -1,11 +1,6 @@
 package dev.talkischeap.nio.server
 
-import dev.talkischeap.nio.server.config.ServerConfigurer
 import dev.talkischeap.nio.server.key.*
-import dev.talkischeap.nio.server.key.AcceptHandler
-import dev.talkischeap.nio.server.key.KeyInterests
-import dev.talkischeap.nio.server.key.ReadHandler
-import dev.talkischeap.nio.server.key.WriteHandler
 import dev.talkischeap.nio.server.logging.Logging
 import dev.talkischeap.nio.server.messages.MessageHandler
 import dev.talkischeap.nio.server.messages.MessageInbox
@@ -16,17 +11,6 @@ import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
 import java.util.concurrent.Executor
-import java.util.concurrent.Executors
-
-fun main() {
-    val server = ServerConfigurer
-        .fromHandler(EchoMessageHandler())
-        .readBufferSize(256)
-        .executor(Executors.newSingleThreadExecutor())
-        .port(25)
-        .configure()
-    server.start()
-}
 
 class Server(
     private val port: Int,
