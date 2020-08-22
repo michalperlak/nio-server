@@ -1,7 +1,12 @@
 package dev.talkischeap.nio.server
 
-import dev.talkischeap.nio.server.key.*
+import dev.talkischeap.nio.server.key.AcceptHandler
+import dev.talkischeap.nio.server.key.KeyHandler
+import dev.talkischeap.nio.server.key.KeyInterests
+import dev.talkischeap.nio.server.key.ReadHandler
+import dev.talkischeap.nio.server.key.WriteHandler
 import dev.talkischeap.nio.server.logging.Logging
+import dev.talkischeap.nio.server.messages.InitMessage
 import dev.talkischeap.nio.server.messages.MessageHandler
 import dev.talkischeap.nio.server.messages.MessageInbox
 import dev.talkischeap.nio.server.messages.MessageOutbox
@@ -16,6 +21,7 @@ class Server(
     private val port: Int,
     private val messageHandler: MessageHandler,
     private val readBufferSize: Int,
+    private val initMessage: InitMessage,
     private val executor: Executor
 ) {
     fun start() {
@@ -62,7 +68,7 @@ class Server(
         outbox: MessageOutbox,
         keyInterests: KeyInterests
     ): KeyHandler {
-        val acceptHandler = AcceptHandler()
+        val acceptHandler = AcceptHandler(initMessage)
         val readHandler = ReadHandler(readBufferSize, inbox)
         val writeHandler = WriteHandler(outbox, keyInterests)
 
