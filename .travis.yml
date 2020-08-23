@@ -6,6 +6,7 @@ dist: trusty
 jdk: openjdk11
 
 script:
+  - chmod +x gradlew
   - ./gradlew build
 
 before_cache:
