@@ -5,6 +5,7 @@ import dev.talkischeap.nio.server.messages.InitMessage
 import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey
 import java.nio.channels.ServerSocketChannel
+import java.util.UUID
 
 internal class AcceptHandler(
     private val initMessage: InitMessage
@@ -18,6 +19,8 @@ internal class AcceptHandler(
         if (initMessageData.isNotEmpty()) {
             socketChannel.write(ByteBuffer.wrap(initMessageData))
         }
+        val connectionId = UUID.randomUUID()
+        key.attach(connectionId.toString())
         socketChannel.register(key.selector(), SelectionKey.OP_READ)
     }
 

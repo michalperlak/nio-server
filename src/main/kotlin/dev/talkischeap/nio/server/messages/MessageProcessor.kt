@@ -27,7 +27,8 @@ internal class MessageProcessor(
     private fun process(message: Message) {
         executor.execute {
             val key = message.key
-            val responseData = messageHandler.handle(message.data)
+            val connectionId = key.attachment()
+            val responseData = messageHandler.handle(connectionId.toString(), message.data)
             responseData?.let {
                 messageOutbox.add(key, it)
                 keyInterests.interests(key, SelectionKey.OP_WRITE)
