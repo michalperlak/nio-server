@@ -2,6 +2,7 @@ package dev.talkischeap.nio.server.messages
 
 import dev.talkischeap.nio.server.key.KeyInterests
 import java.nio.channels.SelectionKey
+import java.util.UUID
 import java.util.concurrent.Executor
 
 internal class MessageProcessor(
@@ -27,7 +28,7 @@ internal class MessageProcessor(
     private fun process(message: Message) {
         executor.execute {
             val key = message.key
-            val connectionId = key.attachment()
+            val connectionId = key.attachment() ?: generateId()
             val responseData = messageHandler.handle(connectionId.toString(), message.data)
             responseData?.let {
                 messageOutbox.add(key, it)
@@ -36,4 +37,6 @@ internal class MessageProcessor(
             key.selector().wakeup()
         }
     }
+
+    private fun generateId(): UUID = UUID.randomUUID()
 }
