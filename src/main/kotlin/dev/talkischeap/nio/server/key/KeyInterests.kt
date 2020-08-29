@@ -14,7 +14,9 @@ internal class KeyInterests(
     fun process() {
         while (interestsQueue.isNotEmpty()) {
             val (key, ops) = interestsQueue.poll()
-            key.interestOps(ops)
+            if (key.isValid) {
+                key.interestOps(ops)
+            }
         }
     }
 }
