@@ -2,6 +2,6 @@ package dev.talkischeap.nio.server.key
 
 import java.nio.channels.SelectionKey
 
-interface KeyHandler {
+internal interface KeyHandler {
     fun handle(key: SelectionKey)
 }
