@@ -29,6 +29,7 @@ internal class MessageProcessor(
         executor.execute {
             val key = message.key
             val connectionId = key.attachment() ?: generateId()
+            key.attach(connectionId)
             val responseData = messageHandler.handle(connectionId.toString(), message.data)
             responseData?.let {
                 messageOutbox.add(key, it)
